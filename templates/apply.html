@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Apply Online | Ekas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+</head>
+<style>
+    @media screen and (min-width: 768px) {
+        .card-header {
+            margin: 1rem;
+            font-size: 200%;
+            color: dodgerblue;
+            font-weight: bold;
+        }
+
+        .form-wrapper {
+        {#display: flex;#}{#justify-content: center;#}
+        }
+
+        .card {
+            width: 60%;
+            padding: 5rem;
+            border: 4px solid orangered;
+            margin-top: 3rem;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+        }
+
+
+    }
+
+    html, body {
+        overflow-x: hidden;
+    }
+
+    form {
+        text-align: center;
+        margin: 1rem;
+    }
+
+    h1 {
+        font-size: 150%;
+        font-weight: bold;
+        text-align: center;
+        color: orangered;
+    }
+
+    button {
+        background-color: orangered;
+    }
+
+    .card-header {
+        text-align: center;
+
+    }
+
+    a {
+        color: black;
+        font-weight: bold;
+    }
+
+    .card {
+        border: 2px solid orangered;
+    }
+
+    .help-text {
+        color: dodgerblue;
+        font-size: 80%;
+        font-style: italic;
+        position: relative;
+        bottom: 1rem;
+    }
+</style>
+<body>
+<div class="card">
+    <div class="card-header">
+        <a href="https://ekasbusiness.com">EKAS Business Services</a>
+    </div>
+    <div class="card-body">
+        <h1 class="card-title">ONLINE LOAN APPLICATION SYSTEM</h1>
+        <p class="card-text">To apply for a Loan, kindly fill in the below form with your accurate details.</p>
+        {#    <a href="#" class="btn btn-primary">Go somewhere</a>#}
+    </div>
+    <div class="form-wrapper">
+        <form action="{% url 'apply' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div>{{ field.label }}</div>
+                <div>{{ field }}</div>
+                <p class="help-text">{{ field.help_text }}</p>
+            {% endfor %}
+            <p>
+                BY submitting this application, you Agree to our <a href="https://ekasbusiness.com/terms.html">Terms And Conditions.</a>.
+                Click <a href="https://ekasbusiness.com/terms.html">Here</a> to read the Terms and Conditions.
+            </p>
+            <button type="submit">Submit Application</button>
+        </form>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous">
+
+</script>
+<style>
+    #dialog {
+        background-color: rgba(0, 0, 0, 0.735);
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        padding: 12px;
+        top: 0;
+        left: 0;
+        z-index: 999;
+    }
+
+    #dialog .cont {
+        background-color: white;
+        padding: 12px;
+        max-width: 600px;
+        border-radius: 5px;
+        margin: auto;
+        margin-top: 100px;
+    }
+
+    #dialog .cont h2 {
+        color: #ff872d;
+    }
+
+    .hide-dialog {
+        display: none;
+    }
+
+    .dbtn {
+        border-radius: 4px;
+        padding: 2px 8px;
+        min-width: 100px;
+        background-color: #ff872d;
+        border: 1px;
+    }
+
+    .dbtn:hover {
+        background-color: #844514;
+    }
+</style>
+<div id="dialog" class="hide-dialog">
+    <div class="cont">
+        <h2>Loan Repayment Details</h2>
+        <p id="total-amout">Total:</p>
+        <p id="month-topay">Number of Months to repay: </p>
+        <p><strong>Service Fee: 50.00 ZMW</strong></p>
+        <button class="dbtn" onclick="dialogClose()">OK</button>
+    </div>
+</div>
+
+<script>
+    var loan_amount = 0;
+    var months = 0;
+    var rate = 0.15;
+    var total = 0;
+    var numOfMonths = 0
+
+
+    function checkRates() {
+        loan_amount = document.getElementById('id_loan_amount').value;
+        months = document.getElementById('id_months_to_repay').value;
+        if (loan_amount && months) {
+            let final_to_pay = parseFloat(loan_amount) + 0.06 * parseFloat(loan_amount) * parseInt(months)
+            total = 'Total amount to repay: ' + (parseFloat(final_to_pay)).toFixed(2) + ' ZMW';
+            if (months < 1) {
+                months = 1;
+            }
+            numOfMonths = 'Amount to repay per Month: ' + (final_to_pay/ months).toFixed(2) + ' ZMW';
+            dialog()
+        }
+    }
+
+    document.getElementById('id_months_to_repay').addEventListener('change', e => {
+        checkRates();
+    });
+    document.getElementById('id_months_to_repay').addEventListener('blur', e => {
+        checkRates();
+    })
+
+    function dialogClose() {
+        document.getElementById('dialog').classList.add('hide-dialog');
+    }
+
+    function dialog() {
+        document.getElementById('total-amout').innerHTML = "";
+        document.getElementById('month-topay').innerHTML = numOfMonths;
+        document.getElementById('dialog').classList.remove('hide-dialog');
+    }
+</script>
+</body>
+</html>
